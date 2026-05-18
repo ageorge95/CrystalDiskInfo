@@ -32,6 +32,14 @@ BOOL CDiskInfoDlg::OnInitDialog()
 	//BOOL result = FALSE;
 
 	CMainDialogFx::OnInitDialog();
+	
+	// When running as /CopyExit (report-and-quit), prevent the window from ever
+	// activating. This stops focus stealing and the USB input-queue freeze that
+	// Windows triggers whenever a new window takes the foreground.
+	if (((CDiskInfoApp*)AfxGetApp())->m_bCopyExit)
+	{
+		ModifyStyleEx(0, WS_EX_NOACTIVATE);
+	}
 
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIconMini, FALSE);	// Set small icon
@@ -363,8 +371,13 @@ void CDiskInfoDlg::InitDialogComplete()
 		}
 		else
 		{
-			DebugPrint(_T("ShowWindow(SW_SHOW)"));
-			ShowWindow(SW_SHOW);
+			// In /CopyExit mode the window is never shown: it only saves the
+			// report and exits, so there is no reason to activate the window.
+			if (!((CDiskInfoApp*)AfxGetApp())->m_bCopyExit)
+			{
+				DebugPrint(_T("ShowWindow(SW_SHOW)"));
+				ShowWindow(SW_SHOW);
+			}
 		}
 
 		if(m_NowDetectingUnitPowerOnHours != TRUE)
