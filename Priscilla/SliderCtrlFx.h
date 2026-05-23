@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include "CommonFx.h"
 #include "ImageFx.h"
 
 class CSliderCtrlFx : public CSliderCtrl
